@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Inventory</title>
+    <style>
+        body { font-family: sans-serif; padding: 2em; background-color: #333; color: #f0f0f0;}
+        h1, h2, h3 { border-bottom: 1px solid #555; padding-bottom: 5px; }
+        .inventory-list { list-style-type: none; padding: 0; }
+        .inventory-list li { background: #444; margin: 5px 0; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .delete-btn { background: #e74c3c; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
+        form { background: #555; padding: 1em; margin-bottom: 2em; border-radius: 5px; }
+        input[type="text"] { padding: 8px; margin-right: 10px; border-radius: 3px; border: 1px solid #666; background: #333; color: #f0f0f0; }
+        button[type="submit"] { background: #2ecc71; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>My Keyboard Inventory</h1>
+
+    <form id="add-case-form">
+        <h3>Add New Case</h3>
+        <input type="text" name="Name" placeholder="Case Name" required>
+        <input type="text" name="Brand" placeholder="Brand">
+        <button type="submit">Add Case</button>
+    </form>
+    
+    <form id="add-switch-form">
+        <h3>Add New Switches</h3>
+        <input type="text" name="Name" placeholder="Switch Name" required>
+        <input type="text" name="Brand" placeholder="Brand">
+        <button type="submit">Add Switches</button>
+    </form>
+
+    <div class="category">
+        <h2>Cases</h2>
+        <ul id="cases-list" class="inventory-list">
+            </ul>
+    </div>
+    
+    <div class="category">
+        <h2>Switches</h2>
+        <ul id="switches-list" class="inventory-list">
+            </ul>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
