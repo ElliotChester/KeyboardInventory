@@ -1,7 +1,7 @@
 // Paste the URL you got from deploying your Google Apps Script here
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQeGjDYRoKBU8xVKBxI2TBYTbf0fh7gsiWV6A0sJtumReyhkq40UrWY04Ek4Wkcro/exec';
 let inventoryData = {}; // Store fetched data globally to help with lookups
-
+let userPassword = null;
 // --- DATA FETCHING AND RENDERING ---
 
 async function fetchData() {
@@ -134,13 +134,30 @@ function createDeleteButton(id, sheetName) {
 }
 
 async function postData(action, payload) {
+    // If the password hasn't been entered yet, ask for it
+    if (!userPassword) {
+        userPassword = prompt("Please enter the edit password:");
+    }
+
     document.body.style.cursor = 'wait';
     try {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
-            body: JSON.stringify({ action, payload })
+            body: JSON.stringify({ 
+                password: userPassword, // Include the password in the request
+                action, 
+                payload 
+            })
         });
-        await response.json(); // Wait for the backend to finish
+        const result = await response.json();
+        
+        // If the script says the password was wrong, alert the user and clear it
+        if (result.status === 'error' && result.message === 'Invalid password') {
+            alert('Incorrect password! Please try again.');
+            userPassword = null; // Clear the wrong password
+        }
+
+        console.log(result);
         await fetchData(); // Refresh all data
     } catch (error) {
         console.error('Error posting data:', error);
