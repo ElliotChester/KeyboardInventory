@@ -23,7 +23,7 @@ function renderAll() {
     renderList('cases', 'CaseID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Color: ${item.Color || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
     renderList('switches', 'SwitchID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Type: ${item.Type || 'N/A'} | Qty: ${item.Quantity || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
     renderList('stabs', 'StabID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Color: ${item.Color || 'N/A'} | Size: ${item.KitSize || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
-    renderList('keycaps', 'KeycapID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Profile: ${item.Profile || 'N/A'} | Material: ${item.Material || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
+    renderList('keycaps', 'KeycapID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'}</span><span>Profile: ${item.Profile || 'N/A'}</span><span>Material: ${item.Material || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
     
     // Render dropdowns for the build form
     populateSelect('select[name="CaseID"]', inventoryData.cases, 'CaseID', 'Name');
