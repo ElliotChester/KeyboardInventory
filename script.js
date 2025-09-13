@@ -20,9 +20,9 @@ async function fetchData() {
 
 function renderAll() {
     // Render inventory lists
-    renderList('cases', 'CaseID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'}</span><span>Color: ${item.Color || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
+    renderList('cases', 'CaseID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'}</span><span>Colour: ${item.Color || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
     renderList('switches', 'SwitchID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'}</span><span>Type: ${item.Type || 'N/A'}</span><span>Qty: ${item.Quantity || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
-    renderList('stabs', 'StabID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'}</span><span>Color: ${item.Color || 'N/A'}</span><span>Size: ${item.KitSize || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
+    renderList('stabs', 'StabID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'}</span><span>Colour: ${item.Color || 'N/A'}</span><span>Size: ${item.KitSize || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
     renderList('keycaps', 'KeycapID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'}</span><span>Profile: ${item.Profile || 'N/A'}</span><span>Material: ${item.Material || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
     
     // Render dropdowns for the build form
