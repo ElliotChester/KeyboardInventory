@@ -108,7 +108,6 @@ function renderKeyboards() {
                 <span><strong>Switches:</strong> ${switchName}</span>
                 <span><strong>Stabs:</strong> ${stabName}</span>
                 <span><strong>Keycaps:</strong> ${keycapName}</span>
-                <span style="font-size: 0.8em; margin-top: 5px;">Built on: ${new Date(build.DateBuilt).toLocaleDateString()}</span>
             `;
 
             li.appendChild(details);
