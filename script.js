@@ -1,50 +1,112 @@
 // Paste the URL you got from deploying your Google Apps Script here
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQeGjDYRoKBU8xVKBxI2TBYTbf0fh7gsiWV6A0sJtumReyhkq40UrWY04Ek4Wkcro/exec';
+let inventoryData = {}; // Store fetched data globally to help with lookups
 
-// Function to fetch all data from the spreadsheet
+// --- DATA FETCHING AND RENDERING ---
+
 async function fetchData() {
     document.body.style.cursor = 'wait';
-    const response = await fetch(SCRIPT_URL);
-    const data = await response.json();
-    renderLists(data);
-    document.body.style.cursor = 'default';
-}
-
-// Function to display ALL the data on the page
-function renderLists(data) {
-    const lists = {
-        cases: document.getElementById('cases-list'),
-        switches: document.getElementById('switches-list')
-        // Add stabs and keycaps here later
-    };
-
-    // Clear all lists before rendering
-    Object.values(lists).forEach(list => { if(list) list.innerHTML = ''; });
-
-    // Render Cases
-    if (data.cases && lists.cases) {
-        data.cases.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `${item.Name} (${item.Brand || 'N/A'})`;
-            const deleteButton = createDeleteButton(item.CaseID, 'Cases');
-            li.appendChild(deleteButton);
-            lists.cases.appendChild(li);
-        });
-    }
-
-    // Render Switches
-    if (data.switches && lists.switches) {
-        data.switches.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `${item.Name} (${item.Brand || 'N/A'})`;
-            const deleteButton = createDeleteButton(item.SwitchID, 'Switches');
-            li.appendChild(deleteButton);
-            lists.switches.appendChild(li);
-        });
+    try {
+        const response = await fetch(SCRIPT_URL);
+        inventoryData = await response.json();
+        renderAll();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('Could not fetch data. Check the console for errors.');
+    } finally {
+        document.body.style.cursor = 'default';
     }
 }
 
-// Helper function to create a delete button
+function renderAll() {
+    // Render inventory lists
+    renderList('cases', 'CaseID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Color: ${item.Color || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
+    renderList('switches', 'SwitchID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Type: ${item.Type || 'N/A'} | Qty: ${item.Quantity || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
+    renderList('stabs', 'StabID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Color: ${item.Color || 'N/A'} | Size: ${item.KitSize || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
+    renderList('keycaps', 'KeycapID', item => `<strong>${item.Name}</strong><span>Brand: ${item.Brand || 'N/A'} | Profile: ${item.Profile || 'N/A'} | Material: ${item.Material || 'N/A'}</span><span>Notes: ${item.Notes || ''}</span>`);
+    
+    // Render dropdowns for the build form
+    populateSelect('select[name="CaseID"]', inventoryData.cases, 'CaseID', 'Name');
+    populateSelect('select[name="SwitchID"]', inventoryData.switches, 'SwitchID', 'Name');
+    populateSelect('select[name="StabID"]', inventoryData.stabs, 'StabID', 'Name');
+    populateSelect('select[name="KeycapID"]', inventoryData.keycaps, 'KeycapID', 'Name');
+
+    // Render the final keyboard builds
+    renderKeyboards();
+}
+
+function renderList(category, idKey, templateFn) {
+    const listElement = document.getElementById(`${category}-list`);
+    if (!listElement) return;
+    listElement.innerHTML = ''; // Clear previous items
+
+    if (inventoryData[category]) {
+        inventoryData[category].forEach(item => {
+            const li = document.createElement('li');
+            const details = document.createElement('div');
+            details.className = 'item-details';
+            details.innerHTML = templateFn(item);
+            
+            li.appendChild(details);
+            li.appendChild(createDeleteButton(item[idKey], category.charAt(0).toUpperCase() + category.slice(1)));
+            listElement.appendChild(li);
+        });
+    }
+}
+
+function populateSelect(selector, data, valueKey, textKey) {
+    const select = document.querySelector(selector);
+    if (!select) return;
+    select.innerHTML = `<option value="">Select ${selector.split('"')[1].replace('ID','')}...</option>`; // Reset
+    if (data) {
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item[valueKey];
+            option.textContent = item[textKey];
+            select.appendChild(option);
+        });
+    }
+}
+
+function renderKeyboards() {
+    const list = document.getElementById('keyboards-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (inventoryData.keyboards) {
+        inventoryData.keyboards.forEach(build => {
+            // Find the names of the parts using their IDs
+            const caseName = findPartById(inventoryData.cases, 'CaseID', build.CaseID)?.Name || 'Unknown Case';
+            const switchName = findPartById(inventoryData.switches, 'SwitchID', build.SwitchID)?.Name || 'Unknown Switches';
+            const stabName = findPartById(inventoryData.stabs, 'StabID', build.StabID)?.Name || 'Unknown Stabs';
+            const keycapName = findPartById(inventoryData.keycaps, 'KeycapID', build.KeycapID)?.Name || 'Unknown Keycaps';
+
+            const li = document.createElement('li');
+            const details = document.createElement('div');
+            details.className = 'item-details';
+            details.innerHTML = `
+                <strong>${build.BuildName}</strong>
+                <span><strong>Case:</strong> ${caseName}</span>
+                <span><strong>Switches:</strong> ${switchName}</span>
+                <span><strong>Stabs:</strong> ${stabName}</span>
+                <span><strong>Keycaps:</strong> ${keycapName}</span>
+                <span style="font-size: 0.8em; margin-top: 5px;">Built on: ${new Date(build.DateBuilt).toLocaleDateString()}</span>
+            `;
+
+            li.appendChild(details);
+            li.appendChild(createDeleteButton(build.KeyboardID, 'Keyboards'));
+            list.appendChild(li);
+        });
+    }
+}
+
+// --- UTILITY AND HELPER FUNCTIONS ---
+
+function findPartById(partsArray, idKey, id) {
+    if (!partsArray) return null;
+    return partsArray.find(part => part[idKey] == id);
+}
+
 function createDeleteButton(id, sheetName) {
     const button = document.createElement('button');
     button.textContent = 'Delete';
@@ -54,8 +116,6 @@ function createDeleteButton(id, sheetName) {
     return button;
 }
 
-
-// Generic function to send data to the backend (for adding/deleting)
 async function postData(action, payload) {
     document.body.style.cursor = 'wait';
     try {
@@ -63,9 +123,8 @@ async function postData(action, payload) {
             method: 'POST',
             body: JSON.stringify({ action, payload })
         });
-        const result = await response.json();
-        console.log(result);
-        await fetchData(); // Refresh the data on the page after action
+        await response.json(); // Wait for the backend to finish
+        await fetchData(); // Refresh all data
     } catch (error) {
         console.error('Error posting data:', error);
     } finally {
@@ -73,48 +132,41 @@ async function postData(action, payload) {
     }
 }
 
-// Event listener for the 'Add Case' form
-document.getElementById('add-case-form').addEventListener('submit', (e) => {
+// --- EVENT LISTENERS ---
+
+function setupFormListener(formId, sheetName) {
+    const form = document.getElementById(formId);
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            postData('addPart', { sheetName, data });
+            e.target.reset();
+        });
+    }
+}
+
+document.getElementById('create-keyboard-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    const payload = {
-        sheetName: 'Cases',
-        data: {
-            Name: e.target.Name.value,
-            Brand: e.target.Brand.value
-        }
-    };
-    postData('addPart', payload);
+    const formData = new FormData(e.target);
+    const payload = Object.fromEntries(formData.entries());
+    postData('createKeyboard', payload);
     e.target.reset();
 });
 
-// Event listener for the 'Add Switch' form
-document.getElementById('add-switch-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const payload = {
-        sheetName: 'Switches',
-        data: {
-            Name: e.target.Name.value,
-            Brand: e.target.Brand.value
-        }
-    };
-    postData('addPart', payload);
-    e.target.reset();
-});
-
-
-// Event listener for all delete buttons (uses event delegation)
 document.addEventListener('click', (e) => {
     if (e.target && e.target.classList.contains('delete-btn')) {
-        const id = e.target.dataset.id;
-        const sheetName = e.target.dataset.sheet;
-
-        if (confirm(`Are you sure you want to delete this item?`)) {
-             const payload = { sheetName, id };
-             postData('deletePart', payload);
+        const { id, sheet } = e.target.dataset;
+        if (confirm(`Are you sure you want to delete this item from ${sheet}?`)) {
+             postData('deletePart', { sheetName: sheet, id });
         }
     }
 });
 
-
-// Initial fetch of data when the page loads
+// Initial Load
+setupFormListener('add-case-form', 'Cases');
+setupFormListener('add-switch-form', 'Switches');
+setupFormListener('add-stab-form', 'Stabs');
+setupFormListener('add-keycap-form', 'Keycaps');
 fetchData();
