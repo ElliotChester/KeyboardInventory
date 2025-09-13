@@ -181,6 +181,27 @@ document.addEventListener('click', (e) => {
     }
 });
 
+document.addEventListener('click', (e) => {
+    // Check if a toggle button was clicked
+    if (e.target.matches('.toggle-form-btn')) {
+        const formId = e.target.dataset.form;
+        const formToToggle = document.getElementById(formId);
+
+        // Hide all forms
+        document.querySelectorAll('.add-form').forEach(form => {
+            // Only hide forms that aren't the one we're trying to show
+            if (form.id !== formId) {
+                form.classList.add('hidden');
+            }
+        });
+
+        // Toggle the target form
+        if (formToToggle) {
+            formToToggle.classList.toggle('hidden');
+        }
+    }
+});
+
 // Initial Load
 setupFormListener('add-case-form', 'Cases');
 setupFormListener('add-switch-form', 'Switches');
