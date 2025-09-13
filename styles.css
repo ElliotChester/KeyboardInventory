@@ -67,8 +67,8 @@ button {
     border-radius: 5px;
     display: inline-flex;
     justify-content: space-between;
-    align-items: center;
     flex-wrap: wrap;
+    align-items: flex-start; /* Aligns items to the top */
 }
 
 .item-details {
