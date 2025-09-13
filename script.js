@@ -126,7 +126,7 @@ function findPartById(partsArray, idKey, id) {
 
 function createDeleteButton(id, sheetName) {
     const button = document.createElement('button');
-    button.textContent = 'Delete';
+    button.textContent = '✕';
     button.className = 'delete-btn';
     button.dataset.id = id;
     button.dataset.sheet = sheetName;
