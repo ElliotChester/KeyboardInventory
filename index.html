@@ -10,15 +10,7 @@
     <h1>Keyboard Inventory</h1>
 
     <section>
-        <h2>Create a New Build</h2>
-        <form id="create-keyboard-form">
-            <input type="text" name="BuildName" placeholder="Name Your Build" required>
-            <select name="CaseID" required><option value="">Select a Case...</option></select>
-            <select name="SwitchID" required><option value="">Select Switches...</option></select>
-            <select name="StabID" required><option value="">Select Stabs...</option></select>
-            <select name="KeycapID" required><option value="">Select Keycaps...</option></select>
-            <button type="submit">Create Keyboard</button>
-        </form>
+        
     </section>
 
     <section>
@@ -30,11 +22,22 @@
         <h2>Add to Inventory</h2>
 
         <div class="toggle-buttons">
+            <button class="toggle-form-btn" data-form="create-keyboard-form">Create Keyboard</button>
             <button class="toggle-form-btn" data-form="add-case-form">Add Case</button>
             <button class="toggle-form-btn" data-form="add-switch-form">Add Switches</button>
             <button class="toggle-form-btn" data-form="add-stab-form">Add Stabs</button>
             <button class="toggle-form-btn" data-form="add-keycap-form">Add Keycaps</button>
         </div>
+
+        <h2>Create a New Build</h2>
+        <form id="create-keyboard-form" class="add-form hidden">
+            <input type="text" name="BuildName" placeholder="Name Your Build" required>
+            <select name="CaseID" required><option value="">Select a Case...</option></select>
+            <select name="SwitchID" required><option value="">Select Switches...</option></select>
+            <select name="StabID" required><option value="">Select Stabs...</option></select>
+            <select name="KeycapID" required><option value="">Select Keycaps...</option></select>
+            <button type="submit">Create Keyboard</button>
+        </form>
 
         <form id="add-case-form" class="add-form hidden">
             <h3>Add Case</h3>
