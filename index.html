@@ -28,7 +28,15 @@
 
     <section>
         <h2>Add to Inventory</h2>
-        <form id="add-case-form">
+
+        <div class="toggle-buttons">
+            <button class="toggle-form-btn" data-form="add-case-form">Add Case</button>
+            <button class="toggle-form-btn" data-form="add-switch-form">Add Switches</button>
+            <button class="toggle-form-btn" data-form="add-stab-form">Add Stabs</button>
+            <button class="toggle-form-btn" data-form="add-keycap-form">Add Keycaps</button>
+        </div>
+
+        <form id="add-case-form" class="add-form hidden">
             <h3>Add Case</h3>
             <input type="text" name="Name" placeholder="Case Name" required>
             <input type="text" name="Brand" placeholder="Brand">
@@ -36,7 +44,7 @@
             <input type="text" name="Notes" placeholder="Notes">
             <button type="submit">Add Case</button>
         </form>
-        <form id="add-switch-form">
+        <form id="add-switch-form" class="add-form hidden">
             <h3>Add Switches</h3>
             <input type="text" name="Name" placeholder="Switch Name" required>
             <input type="text" name="Brand" placeholder="Brand">
@@ -45,7 +53,7 @@
             <input type="text" name="Notes" placeholder="Notes (e.g., Lubed)">
             <button type="submit">Add Switches</button>
         </form>
-        <form id="add-stab-form">
+        <form id="add-stab-form" class="add-form hidden">
             <h3>Add Stabilizers</h3>
             <input type="text" name="Name" placeholder="Stab Name" required>
             <input type="text" name="Brand" placeholder="Brand">
@@ -54,7 +62,7 @@
             <input type="text" name="Notes" placeholder="Notes (e.g., Modded)">
             <button type="submit">Add Stabs</button>
         </form>
-        <form id="add-keycap-form">
+        <form id="add-keycap-form" class="add-form hidden">
             <h3>Add Keycaps</h3>
             <input type="text" name="Name" placeholder="Keycap Set Name" required>
             <input type="text" name="Brand" placeholder="Brand">
