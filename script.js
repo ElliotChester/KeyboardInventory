@@ -57,15 +57,33 @@ function renderList(category, idKey, templateFn) {
 function populateSelect(selector, data, valueKey, textKey) {
     const select = document.querySelector(selector);
     if (!select) return;
-    select.innerHTML = `<option value="">Select ${selector.split('"')[1].replace('ID','')}...</option>`; // Reset
-    if (data) {
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item[valueKey];
-            option.textContent = item[textKey];
-            select.appendChild(option);
-        });
-    }
+    // Reset the dropdown
+    select.innerHTML = `<option value="">Select ${selector.split('"')[1].replace('ID','')}...</option>`; 
+    if (!data) return;
+
+    // First, count how many times each name appears
+    const nameCounts = data.reduce((acc, item) => {
+        const name = item[textKey];
+        if (name) { // Ensure name is not null or undefined
+            acc[name] = (acc[name] || 0) + 1;
+        }
+        return acc;
+    }, {});
+
+    // Now, create the options with the new logic
+    data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item[valueKey];
+
+        let displayText = item[textKey];
+        // If the item's name appears more than once AND it has a non-empty "Color" property...
+        if (nameCounts[displayText] > 1 && item.Color) {
+            displayText += ` (${item.Color})`;
+        }
+        
+        option.textContent = displayText;
+        select.appendChild(option);
+    });
 }
 
 function renderKeyboards() {
