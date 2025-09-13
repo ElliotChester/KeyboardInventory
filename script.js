@@ -1,5 +1,5 @@
 // Paste the URL you got from deploying your Google Apps Script here
-const SCRIPT_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQeGjDYRoKBU8xVKBxI2TBYTbf0fh7gsiWV6A0sJtumReyhkq40UrWY04Ek4Wkcro/exec';
 
 // Function to fetch all data from the spreadsheet
 async function fetchData() {
